@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QApplication
 app = QApplication([])
  
 from main_window import *
+from menu_window import *
  
  
 class Question ():
@@ -114,7 +115,50 @@ def click_ok():
 # Під'єднуємо кнопку до обробника функції click_ok()
 btn_next.clicked.connect(click_ok)
  
- 
+def rest():
+    window.hide()
+
+    n = sp_rest.value() * 60
+    sleep(n)
+
+    window.show()
+
+btn_rest.clicked.connect(rest) 
+
+def menu ():
+    if current_question.count_ask == 0:
+        c = 0
+    else:
+        c = (current_question.count_right/current_question.count_ask)*100
+
+    text = f'Разів відповіли: {current_question.count_ask}\n' \
+           f'Вірних відповідей: {current_question.count_right}\n' \
+           f'Успішність: {round(c, 2)}%'
+    
+    lb_statistic.setText(text)
+
+    menu_win.show()
+
+    # Виставити вікно "Меню" по центру екрану ПК
+    screen_geometry = app.desktop().screenGeometry()
+    x = (screen_geometry.width() - menu_win.width()) // 2
+    y = (screen_geometry.height() - menu_win.height()) // 2
+    menu_win.move(x, y)
+
+    window.hide()
+
+btn_menu.clicked.connect(menu)
+
+def back_menu():
+    menu_win.hide()
+    window.show()
+
+btn_back.clicked.connect(back_menu)
+
+
+
+
+
 # показати вікно
 window.show()
 # запустити додаток
