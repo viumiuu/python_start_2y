@@ -3,6 +3,52 @@ from time import sleep
 from PyQt5.QtWidgets import QApplication
  
 app = QApplication([])
+
+# Style: 5
+# Темний + рожевий
+app.setStyleSheet("""
+    QApplication {
+        background: #1F1F2B;  /* Темний фон з фіолетовим відтінком для фантазійної атмосфери */
+    }
+    QWidget {
+        background: #2B2B3D;  /* Темніший фон для відмінності */
+        color: #E1E1E1;  /* Світло-сірий колір тексту */
+    }
+    QPushButton {
+        background-color: #6A1B9A;  /* Темно-фіолетовий для кнопок */
+        border: 2px solid #9C27B0;  /* Світло-фіолетовий бордер */
+        border-radius: 12px;  /* Закруглені кути */
+        color: white;  /* Білий текст */
+        font-family: 'Fantasy', serif;  /* Фантазійний шрифт */
+        font-size: 20px;
+        padding: 10px 20px;
+        margin: 8px 0;
+    }
+    QPushButton:hover {
+        background-color: #8E24AA;  /* Світліший фіолетовий при наведенні */
+    }
+    QPushButton:pressed {
+        background-color: #4A0072;  /* Темніший фіолетовий при натисканні */
+    }
+    QGroupBox {
+        background: #3D3D4B;  /* Темно-сірий фон для групових рамок */
+        border: 2px solid #9C27B0;  /* Світло-фіолетовий бордер */
+        border-radius: 10px;  /* Закруглені кути */
+        padding: 10px;
+        font-family: 'Fantasy', serif;
+        font-size: 22px;
+        color: #E1E1E1;  /* Світло-сірий текст в групах */
+    }
+    QLabel {
+        color: #E1E1E1;  /* Світло-сірий текст */
+        font-family: 'Fantasy', serif;
+        font-size: 24px;
+        margin: 5px;
+    }
+""")
+ 
+ 
+ 
  
 from main_window import *
 from menu_window import *
