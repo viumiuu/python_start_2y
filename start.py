@@ -4,45 +4,45 @@ from PyQt5.QtWidgets import QApplication
  
 app = QApplication([])
 
-# Style: 5
-# Темний + рожевий
+# Style: 10
+# Чорний + червоний + жовтий
 app.setStyleSheet("""
     QApplication {
-        background: #1F1F2B;  /* Темний фон з фіолетовим відтінком для фантазійної атмосфери */
+        background: #0E0E0E;  /* Темний фон для супергеройського стилю */
     }
     QWidget {
-        background: #2B2B3D;  /* Темніший фон для відмінності */
-        color: #E1E1E1;  /* Світло-сірий колір тексту */
+        background: #1A1A1A;  /* Темно-сірий фон для вікон */
+        color: #FFDD00;  /* Жовтий колір тексту */
     }
     QPushButton {
-        background-color: #6A1B9A;  /* Темно-фіолетовий для кнопок */
-        border: 2px solid #9C27B0;  /* Світло-фіолетовий бордер */
-        border-radius: 12px;  /* Закруглені кути */
-        color: white;  /* Білий текст */
-        font-family: 'Fantasy', serif;  /* Фантазійний шрифт */
-        font-size: 20px;
+        background-color: #FF0000;  /* Червоний для кнопок */
+        border: 3px solid #000000;  /* Чорний бордер для кнопок */
+        border-radius: 5px;  /* Закруглені кути кнопок */
+        color: #FFFFFF;  /* Білий текст */
+        font-family: 'Impact', sans-serif;  /* Сильний шрифт для супергеройського стилю */
+        font-size: 18px;
         padding: 10px 20px;
         margin: 8px 0;
     }
     QPushButton:hover {
-        background-color: #8E24AA;  /* Світліший фіолетовий при наведенні */
+        background-color: #FF4500;  /* Світліший червоний при наведенні */
     }
     QPushButton:pressed {
-        background-color: #4A0072;  /* Темніший фіолетовий при натисканні */
+        background-color: #B22222;  /* Темніший червоний при натисканні */
     }
     QGroupBox {
-        background: #3D3D4B;  /* Темно-сірий фон для групових рамок */
-        border: 2px solid #9C27B0;  /* Світло-фіолетовий бордер */
-        border-radius: 10px;  /* Закруглені кути */
+        background: #2F2F2F;  /* Темно-сірий фон для груп */
+        border: 3px solid #FFDD00;  /* Жовтий бордер для груп */
+        border-radius: 5px;  /* Закруглені кути */
         padding: 10px;
-        font-family: 'Fantasy', serif;
-        font-size: 22px;
-        color: #E1E1E1;  /* Світло-сірий текст в групах */
+        font-family: 'Impact', sans-serif;
+        font-size: 20px;
+        color: #FFDD00;  /* Жовтий текст в групах */
     }
     QLabel {
-        color: #E1E1E1;  /* Світло-сірий текст */
-        font-family: 'Fantasy', serif;
-        font-size: 24px;
+        color: #FFDD00;  /* Жовтий текст */
+        font-family: 'Impact', sans-serif;
+        font-size: 22px;
         margin: 5px;
     }
 """)
@@ -93,17 +93,33 @@ radio_buttons = [rb_ans1, rb_ans2, rb_ans3, rb_ans4]
 # підставляємо питання та відповідді до радіо перемикачів
 def new_question():
     global current_question
-    current_question = choice(questions)
 
-    lb_question.setText(current_question.question)
-    lb_right_answer.setText(current_question.answer)
+    try:
+        current_question = choice(questions)
 
-    shuffle(radio_buttons)
+        #questions.remove(current_question)
 
-    radio_buttons[0].setText(current_question.answer)
-    radio_buttons[1].setText(current_question.wrong_answer1)
-    radio_buttons[2].setText(current_question.wrong_answer2)
-    radio_buttons[3].setText(current_question.wrong_answer3)
+        lb_question.setText(current_question.question)
+        lb_right_answer.setText(current_question.answer)
+
+        shuffle(radio_buttons)
+
+        radio_buttons[0].setText(current_question.answer)
+        radio_buttons[1].setText(current_question.wrong_answer1)
+        radio_buttons[2].setText(current_question.wrong_answer2)
+        radio_buttons[3].setText(current_question.wrong_answer3)
+
+    except:
+        lb_question.setText("Кінець тесту")
+        lb_right_answer.setText("Кінець тесту")
+
+        shuffle(radio_buttons)
+
+        radio_buttons[0].setText("")
+        radio_buttons[1].setText("")
+        radio_buttons[2].setText("")
+        radio_buttons[3].setText("")
+
  
 # запускаємо функцію
 new_question()
@@ -122,6 +138,7 @@ def check():
             if answer.text() == lb_right_answer.text():
                 current_question.got_right()
                 lb_result.setText('Вірно!')
+                lb_result.setStyleSheet("color: green;")
                 break
  
     # Конструкція else після циклу працює лише тоді, коли цикл закінчився без переривання
@@ -129,7 +146,8 @@ def check():
     else:
         # якщо в циклі немає істини (true), обрана не вірна відповідь
         lb_result.setText('Не вірно!')
-        current_question.got_wrong
+        lb_result.setStyleSheet("color: red;")
+        current_question.got_wrong()
  
     RadioGroup.setExclusive(True)
  
@@ -172,25 +190,35 @@ def rest():
 btn_rest.clicked.connect(rest) 
 
 def menu ():
-    if current_question.count_ask == 0:
-        c = 0
-    else:
-        c = (current_question.count_right/current_question.count_ask)*100
 
-    text = f'Разів відповіли: {current_question.count_ask}\n' \
-           f'Вірних відповідей: {current_question.count_right}\n' \
-           f'Успішність: {round(c, 2)}%'
-    
+    total_answers = 0
+    right_answers = 0
+ 
+    # Перевіряємо всі запитання та рахуємо правильні + загальні відповідді
+    for question in questions:
+        total_answers += question.count_ask
+        right_answers += question.count_right
+ 
+    # формула успішності
+    success_rate = (right_answers/(total_answers if total_answers > 0 else 1)) * 100
+ 
+    text = f'Разів відповіли: {total_answers}\n' \
+           f'Вірних відповідей: {right_answers}\n' \
+           f'Успішність: {round(success_rate, 2)}%'
+    # підставити змінну с текстом до порожнього QLabel
     lb_statistic.setText(text)
-
+ 
+ 
+    # Показати вікно "Меню"
     menu_win.show()
-
+ 
     # Виставити вікно "Меню" по центру екрану ПК
     screen_geometry = app.desktop().screenGeometry()
     x = (screen_geometry.width() - menu_win.width()) // 2
     y = (screen_geometry.height() - menu_win.height()) // 2
     menu_win.move(x, y)
-
+ 
+    # Приховати вікно "Головне"
     window.hide()
 
 btn_menu.clicked.connect(menu)
@@ -201,8 +229,28 @@ def back_menu():
 
 btn_back.clicked.connect(back_menu)
 
-
-
+def clear():
+    le_question.clear()
+    le_right_ans.clear()
+    le_wrong_ans1.clear()
+    le_wrong_ans2.clear()
+    le_wrong_ans3.clear()
+ 
+btn_clear.clicked.connect(clear)
+ 
+# кнопка додати нове запитання з 4 варіантами відповідді
+def add_question():
+    if le_question.text().strip() != "":
+        new_q = Question(le_question.text(), le_right_ans.text(),
+                        le_wrong_ans1.text(), le_wrong_ans2.text(),
+                        le_wrong_ans3.text())
+ 
+        questions.append(new_q)
+        clear()
+ 
+btn_add_question.clicked.connect(add_question)
+ 
+ 
 
 
 # показати вікно
